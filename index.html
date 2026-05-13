@@ -1,0 +1,522 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="LoanTrack" />
+  <meta name="application-name" content="LoanTrack" />
+  <meta name="theme-color" content="#0a0f1e" id="meta-theme-color" />
+  <meta name="description" content="Advanced Loan & EMI Tracker — manage all your loans beautifully." />
+
+  <link rel="manifest" href="manifest.json" />
+  <link rel="apple-touch-icon" href="icons/icon-192.png" />
+  <link rel="apple-touch-startup-image" href="icons/splash.png" />
+  <link rel="stylesheet" href="styles.css" />
+
+  <title>LoanTrack — EMI Manager</title>
+</head>
+<body class="theme-midnight" data-theme="midnight">
+
+  <!-- Splash Screen -->
+  <div id="splash-screen">
+    <div class="splash-inner">
+      <div class="splash-logo">
+        <svg width="64" height="64" viewBox="0 0 64 64" fill="none">
+          <rect width="64" height="64" rx="16" fill="url(#splashGrad)"/>
+          <path d="M20 44 L20 28 L32 20 L44 28 L44 44" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+          <path d="M27 44 L27 36 L37 36 L37 44" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+          <circle cx="32" cy="32" r="3" fill="white" opacity="0.8"/>
+          <defs>
+            <linearGradient id="splashGrad" x1="0" y1="0" x2="64" y2="64">
+              <stop offset="0%" stop-color="#4f8ef7"/>
+              <stop offset="100%" stop-color="#1e40af"/>
+            </linearGradient>
+          </defs>
+        </svg>
+      </div>
+      <h1 class="splash-title">LoanTrack</h1>
+      <p class="splash-sub">Smart EMI Manager</p>
+      <div class="splash-loader"><div class="splash-bar"></div></div>
+    </div>
+  </div>
+
+  <!-- App Shell -->
+  <div id="app" class="hidden">
+
+    <!-- Background Layer -->
+    <div class="bg-layer" id="bg-layer"></div>
+    <div class="bg-overlay"></div>
+
+    <!-- Header -->
+    <header class="app-header glass" id="app-header">
+      <div class="header-left">
+        <button class="icon-btn" id="settings-btn" aria-label="Settings">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/>
+          </svg>
+        </button>
+      </div>
+      <h1 class="header-title" id="page-title">Dashboard</h1>
+      <div class="header-right">
+        <button class="icon-btn" id="search-btn" aria-label="Search">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+          </svg>
+        </button>
+      </div>
+    </header>
+
+    <!-- Search Bar -->
+    <div class="search-bar-wrap glass hidden" id="search-bar-wrap">
+      <input type="text" id="search-input" placeholder="Search loans…" autocomplete="off" />
+      <button class="icon-btn" id="search-close-btn">✕</button>
+    </div>
+
+    <!-- Main Content Area -->
+    <main class="main-content" id="main-content">
+
+      <!-- ===== DASHBOARD PAGE ===== -->
+      <section class="page active" id="page-dashboard">
+        <div class="section-label">Overview</div>
+
+        <!-- Summary Cards Row -->
+        <div class="summary-row">
+          <div class="summary-card glass card-anim" id="sc-total-loans">
+            <div class="sc-icon">🏦</div>
+            <div class="sc-val" id="sc-val-loans">0</div>
+            <div class="sc-label">Active Loans</div>
+          </div>
+          <div class="summary-card glass card-anim" id="sc-total-borrowed">
+            <div class="sc-icon">💰</div>
+            <div class="sc-val" id="sc-val-borrowed">₹0</div>
+            <div class="sc-label">Total Borrowed</div>
+          </div>
+          <div class="summary-card glass card-anim" id="sc-pending">
+            <div class="sc-icon">⏳</div>
+            <div class="sc-val" id="sc-val-pending">₹0</div>
+            <div class="sc-label">Pending</div>
+          </div>
+          <div class="summary-card glass card-anim" id="sc-paid">
+            <div class="sc-icon">✅</div>
+            <div class="sc-val" id="sc-val-paid">₹0</div>
+            <div class="sc-label">Paid</div>
+          </div>
+        </div>
+
+        <!-- Upcoming EMI Banner -->
+        <div class="upcoming-banner glass card-anim" id="upcoming-banner">
+          <div class="ub-left">
+            <span class="ub-tag">Next Due</span>
+            <span class="ub-name" id="ub-name">—</span>
+          </div>
+          <div class="ub-right">
+            <span class="ub-amount" id="ub-amount">—</span>
+            <span class="ub-date" id="ub-date">—</span>
+          </div>
+        </div>
+
+        <!-- Monthly Chart -->
+        <div class="section-label">Monthly Payments</div>
+        <div class="chart-card glass card-anim">
+          <canvas id="monthly-chart" height="160"></canvas>
+        </div>
+
+        <!-- EMI Stats -->
+        <div class="stats-row">
+          <div class="stat-pill glass">
+            <span class="sp-num" id="sp-completed">0</span>
+            <span class="sp-label">EMIs Done</span>
+          </div>
+          <div class="stat-pill glass">
+            <span class="sp-num" id="sp-remaining">0</span>
+            <span class="sp-label">EMIs Left</span>
+          </div>
+          <div class="stat-pill glass">
+            <span class="sp-num" id="sp-monthly">₹0</span>
+            <span class="sp-label">This Month</span>
+          </div>
+        </div>
+
+        <!-- Loan Cards List (Dashboard Preview) -->
+        <div class="section-label">Your Loans</div>
+        <div id="dashboard-loan-list" class="loan-list-wrap">
+          <!-- Populated by JS -->
+        </div>
+        <div class="empty-state hidden" id="dashboard-empty">
+          <div class="es-illustration">
+            <svg width="100" height="100" viewBox="0 0 100 100" fill="none">
+              <circle cx="50" cy="50" r="45" fill="rgba(255,255,255,0.05)" stroke="rgba(255,255,255,0.12)" stroke-width="2"/>
+              <rect x="30" y="38" width="40" height="28" rx="6" fill="none" stroke="rgba(255,255,255,0.3)" stroke-width="2"/>
+              <path d="M38 38 V32 a12 12 0 0 1 24 0 V38" stroke="rgba(255,255,255,0.3)" stroke-width="2" fill="none" stroke-linecap="round"/>
+              <circle cx="50" cy="52" r="4" fill="rgba(255,255,255,0.3)"/>
+            </svg>
+          </div>
+          <p class="es-title">No loans yet</p>
+          <p class="es-sub">Tap <strong>+</strong> to add your first loan</p>
+        </div>
+      </section>
+
+      <!-- ===== LOANS PAGE ===== -->
+      <section class="page" id="page-loans">
+        <div class="filter-row">
+          <button class="filter-chip active" data-filter="all">All</button>
+          <button class="filter-chip" data-filter="personal">Personal</button>
+          <button class="filter-chip" data-filter="credit_card">Credit Card</button>
+          <button class="filter-chip" data-filter="vehicle">Vehicle</button>
+          <button class="filter-chip" data-filter="consumer">Consumer</button>
+          <button class="filter-chip" data-filter="other">Other</button>
+        </div>
+        <div class="sort-row">
+          <label>Sort:</label>
+          <select id="sort-select" class="sort-select glass-input">
+            <option value="date_asc">Date ↑</option>
+            <option value="date_desc">Date ↓</option>
+            <option value="pending_desc">Pending ↓</option>
+            <option value="pending_asc">Pending ↑</option>
+            <option value="progress_desc">Progress ↓</option>
+          </select>
+        </div>
+        <div id="loans-list" class="loan-list-wrap">
+          <!-- Populated by JS -->
+        </div>
+        <div class="empty-state hidden" id="loans-empty">
+          <div class="es-illustration">
+            <svg width="100" height="100" viewBox="0 0 100 100" fill="none">
+              <circle cx="50" cy="50" r="45" fill="rgba(255,255,255,0.05)" stroke="rgba(255,255,255,0.12)" stroke-width="2"/>
+              <path d="M30 55 Q40 35 50 55 Q60 75 70 55" stroke="rgba(255,255,255,0.3)" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+              <circle cx="30" cy="55" r="3" fill="rgba(255,255,255,0.3)"/>
+              <circle cx="50" cy="55" r="3" fill="rgba(255,255,255,0.3)"/>
+              <circle cx="70" cy="55" r="3" fill="rgba(255,255,255,0.3)"/>
+            </svg>
+          </div>
+          <p class="es-title">No loans found</p>
+          <p class="es-sub">Add a loan to get started</p>
+        </div>
+      </section>
+
+      <!-- ===== HISTORY PAGE ===== -->
+      <section class="page" id="page-history">
+        <div class="section-label">Payment History</div>
+        <div id="history-loan-select-wrap" class="history-select-wrap">
+          <select id="history-loan-select" class="glass-input full-width">
+            <option value="">Select a Loan…</option>
+          </select>
+        </div>
+        <div id="history-timeline" class="timeline-wrap">
+          <!-- Populated by JS -->
+        </div>
+        <div class="empty-state" id="history-empty">
+          <div class="es-illustration">
+            <svg width="100" height="100" viewBox="0 0 100 100" fill="none">
+              <circle cx="50" cy="50" r="45" fill="rgba(255,255,255,0.05)" stroke="rgba(255,255,255,0.12)" stroke-width="2"/>
+              <line x1="35" y1="35" x2="35" y2="68" stroke="rgba(255,255,255,0.3)" stroke-width="2" stroke-linecap="round"/>
+              <circle cx="35" cy="35" r="4" fill="rgba(255,255,255,0.25)"/>
+              <circle cx="35" cy="50" r="4" fill="rgba(255,255,255,0.25)"/>
+              <circle cx="35" cy="65" r="4" fill="rgba(255,255,255,0.25)"/>
+              <line x1="44" y1="35" x2="65" y2="35" stroke="rgba(255,255,255,0.2)" stroke-width="2" stroke-linecap="round"/>
+              <line x1="44" y1="50" x2="60" y2="50" stroke="rgba(255,255,255,0.2)" stroke-width="2" stroke-linecap="round"/>
+              <line x1="44" y1="65" x2="68" y2="65" stroke="rgba(255,255,255,0.2)" stroke-width="2" stroke-linecap="round"/>
+            </svg>
+          </div>
+          <p class="es-title">Select a loan</p>
+          <p class="es-sub">View payment history here</p>
+        </div>
+      </section>
+
+      <!-- ===== MORE PAGE ===== -->
+      <section class="page" id="page-more">
+        <div class="section-label">Data</div>
+        <div class="settings-group glass card-anim">
+          <button class="settings-row" id="backup-btn">
+            <span class="sr-icon">💾</span>
+            <span class="sr-label">Backup Data (JSON)</span>
+            <span class="sr-chevron">›</span>
+          </button>
+          <div class="settings-divider"></div>
+          <button class="settings-row" id="restore-btn">
+            <span class="sr-icon">📂</span>
+            <span class="sr-label">Restore from Backup</span>
+            <span class="sr-chevron">›</span>
+          </button>
+          <div class="settings-divider"></div>
+          <button class="settings-row" id="export-btn">
+            <span class="sr-icon">📊</span>
+            <span class="sr-label">Export Monthly Summary</span>
+            <span class="sr-chevron">›</span>
+          </button>
+        </div>
+        <input type="file" id="restore-input" accept=".json" class="hidden" />
+
+        <div class="section-label">Appearance</div>
+        <div class="settings-group glass card-anim">
+          <div class="settings-row no-btn">
+            <span class="sr-icon">🎨</span>
+            <span class="sr-label">Theme</span>
+          </div>
+          <div class="theme-grid" id="theme-grid">
+            <!-- Populated by JS -->
+          </div>
+          <div class="settings-divider"></div>
+          <div class="settings-row no-btn">
+            <span class="sr-icon">✨</span>
+            <span class="sr-label">Accent Color</span>
+            <input type="color" id="accent-picker" value="#4f8ef7" class="color-picker" />
+          </div>
+        </div>
+
+        <div class="section-label">Currency</div>
+        <div class="settings-group glass card-anim">
+          <div class="settings-row no-btn">
+            <span class="sr-icon">💱</span>
+            <span class="sr-label">Currency Symbol</span>
+            <input type="text" id="currency-input" value="₹" maxlength="3" class="glass-input mini-input" />
+          </div>
+        </div>
+
+        <div class="section-label">About</div>
+        <div class="settings-group glass card-anim">
+          <div class="settings-row no-btn">
+            <span class="sr-icon">📱</span>
+            <span class="sr-label">LoanTrack v1.0</span>
+          </div>
+          <div class="settings-divider"></div>
+          <div class="settings-row no-btn">
+            <span class="sr-icon">🔒</span>
+            <span class="sr-label">100% Offline — No data leaves your device</span>
+          </div>
+        </div>
+
+        <div class="bottom-spacer"></div>
+      </section>
+
+    </main>
+
+    <!-- Bottom Navigation -->
+    <nav class="bottom-nav glass" id="bottom-nav">
+      <button class="nav-btn active" data-page="dashboard" aria-label="Dashboard">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/>
+          <rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/>
+        </svg>
+        <span>Dashboard</span>
+      </button>
+      <button class="nav-btn" data-page="loans" aria-label="Loans">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="2" y="5" width="20" height="14" rx="3"/><line x1="2" y1="10" x2="22" y2="10"/>
+        </svg>
+        <span>Loans</span>
+      </button>
+      <button class="nav-btn nav-add-btn" id="add-loan-fab" aria-label="Add Loan">
+        <div class="fab-circle">
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
+            <line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>
+          </svg>
+        </div>
+      </button>
+      <button class="nav-btn" data-page="history" aria-label="History">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="12 8 12 12 14 14"/><path d="M3.05 11a9 9 0 1 0 .5-4.5"/>
+          <polyline points="3 3 3 8 8 8"/>
+        </svg>
+        <span>History</span>
+      </button>
+      <button class="nav-btn" data-page="more" aria-label="More">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="5" r="1.5" fill="currentColor"/><circle cx="12" cy="12" r="1.5" fill="currentColor"/><circle cx="12" cy="19" r="1.5" fill="currentColor"/>
+        </svg>
+        <span>More</span>
+      </button>
+    </nav>
+
+  </div><!-- /#app -->
+
+  <!-- ===== MODALS ===== -->
+
+  <!-- Add/Edit Loan Modal -->
+  <div class="modal-backdrop hidden" id="loan-modal-backdrop">
+    <div class="modal glass slide-up" id="loan-modal">
+      <div class="modal-header">
+        <button class="modal-close" id="loan-modal-close">✕</button>
+        <h2 class="modal-title" id="loan-modal-title">Add Loan</h2>
+        <button class="modal-save-btn" id="loan-modal-save">Save</button>
+      </div>
+      <div class="modal-body">
+        <input type="hidden" id="lf-id" />
+
+        <div class="form-section-label">Basic Info</div>
+        <div class="form-group">
+          <label>Bank / Provider</label>
+          <input type="text" id="lf-bank" placeholder="e.g. HDFC Bank" class="glass-input" />
+        </div>
+        <div class="form-group">
+          <label>Loan Nickname / ID</label>
+          <input type="text" id="lf-nickname" placeholder="e.g. Home Reno Loan" class="glass-input" />
+        </div>
+        <div class="form-group">
+          <label>Loan Type</label>
+          <select id="lf-type" class="glass-input">
+            <option value="personal">Personal Loan</option>
+            <option value="credit_card">Credit Card EMI</option>
+            <option value="debit_card">Debit Card EMI</option>
+            <option value="consumer">Consumer Loan</option>
+            <option value="vehicle">Vehicle Loan</option>
+            <option value="other">Other</option>
+          </select>
+        </div>
+
+        <div class="form-section-label">Financial Details</div>
+        <div class="form-group">
+          <label>Loan Amount (<span class="currency-label">₹</span>)</label>
+          <input type="number" id="lf-amount" placeholder="500000" class="glass-input" inputmode="decimal" />
+        </div>
+        <div class="form-group">
+          <label>EMI Amount (<span class="currency-label">₹</span>)</label>
+          <input type="number" id="lf-emi" placeholder="12000" class="glass-input" inputmode="decimal" />
+        </div>
+        <div class="form-group">
+          <label>Interest Rate (% yearly)</label>
+          <input type="number" id="lf-rate" placeholder="12" class="glass-input" inputmode="decimal" step="0.01" />
+        </div>
+        <div class="form-group">
+          <label>Loan Tenure (months)</label>
+          <input type="number" id="lf-tenure" placeholder="48" class="glass-input" inputmode="numeric" />
+        </div>
+        <div class="form-group">
+          <label>Loan Start Date</label>
+          <input type="date" id="lf-start" class="glass-input" />
+        </div>
+
+        <div class="form-section-label">EMI Calculator</div>
+        <div class="calc-box glass-subtle">
+          <div class="calc-row">
+            <span>Monthly EMI</span>
+            <strong id="calc-emi">—</strong>
+          </div>
+          <div class="calc-row">
+            <span>Total Repayment</span>
+            <strong id="calc-total">—</strong>
+          </div>
+          <div class="calc-row">
+            <span>Total Interest</span>
+            <strong id="calc-interest">—</strong>
+          </div>
+        </div>
+
+        <div class="form-section-label">Optional</div>
+        <div class="form-group">
+          <label>Notes</label>
+          <textarea id="lf-notes" placeholder="Any notes about this loan…" class="glass-input" rows="3"></textarea>
+        </div>
+
+        <div class="form-group" id="edit-emi-section" style="display:none;">
+          <div class="form-section-label">Track Payments</div>
+          <div class="months-paid-row">
+            <label>Months Paid So Far</label>
+            <input type="number" id="lf-months-paid" placeholder="0" class="glass-input" inputmode="numeric" min="0" />
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Loan Detail / EMI Marking Modal -->
+  <div class="modal-backdrop hidden" id="detail-modal-backdrop">
+    <div class="modal glass slide-up large-modal" id="detail-modal">
+      <div class="modal-header">
+        <button class="modal-close" id="detail-modal-close">✕</button>
+        <h2 class="modal-title" id="detail-modal-title">Loan Detail</h2>
+        <button class="modal-save-btn" id="detail-edit-btn">Edit</button>
+      </div>
+      <div class="modal-body" id="detail-modal-body">
+        <!-- Populated by JS -->
+      </div>
+    </div>
+  </div>
+
+  <!-- EMI Mark Modal -->
+  <div class="modal-backdrop hidden" id="emi-modal-backdrop">
+    <div class="modal glass slide-up small-modal" id="emi-modal">
+      <div class="modal-header">
+        <button class="modal-close" id="emi-modal-close">✕</button>
+        <h2 class="modal-title" id="emi-modal-title">Mark EMI</h2>
+        <button class="modal-save-btn" id="emi-modal-save">Save</button>
+      </div>
+      <div class="modal-body">
+        <input type="hidden" id="emf-loan-id" />
+        <input type="hidden" id="emf-month-index" />
+        <div class="form-group">
+          <label>Status</label>
+          <select id="emf-status" class="glass-input">
+            <option value="paid">Paid ✅</option>
+            <option value="missed">Missed ❌</option>
+            <option value="partial">Partial 🔶</option>
+            <option value="pending">Pending ⏳</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Amount Paid (<span class="currency-label">₹</span>)</label>
+          <input type="number" id="emf-amount" placeholder="12000" class="glass-input" inputmode="decimal" />
+        </div>
+        <div class="form-group">
+          <label>Payment Date</label>
+          <input type="date" id="emf-date" class="glass-input" />
+        </div>
+        <div class="form-group">
+          <label>Note</label>
+          <input type="text" id="emf-note" placeholder="Optional note" class="glass-input" />
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Settings Modal -->
+  <div class="modal-backdrop hidden" id="settings-modal-backdrop">
+    <div class="modal glass slide-up" id="settings-modal">
+      <div class="modal-header">
+        <button class="modal-close" id="settings-modal-close">✕</button>
+        <h2 class="modal-title">Settings</h2>
+      </div>
+      <div class="modal-body">
+        <div class="form-section-label">Theme</div>
+        <div class="theme-grid" id="settings-theme-grid">
+          <!-- Populated by JS -->
+        </div>
+        <div class="form-section-label">Accent Color</div>
+        <div class="form-group">
+          <input type="color" id="settings-accent-picker" value="#4f8ef7" class="color-picker full-color-picker" />
+        </div>
+        <div class="form-section-label">Currency</div>
+        <div class="form-group">
+          <input type="text" id="settings-currency-input" value="₹" maxlength="3" class="glass-input" placeholder="₹" />
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast -->
+  <div class="toast hidden" id="toast"></div>
+
+  <!-- Celebration Overlay -->
+  <div class="celebration hidden" id="celebration">
+    <div class="celebration-inner">
+      <div class="celebration-emoji">🎉</div>
+      <h2>Loan Completed!</h2>
+      <p id="celebration-name"></p>
+      <button class="cta-btn" id="celebration-close">Awesome!</button>
+    </div>
+    <canvas id="confetti-canvas"></canvas>
+  </div>
+
+  <!-- Install Banner -->
+  <div class="install-banner glass hidden" id="install-banner">
+    <span>📲 Add LoanTrack to Home Screen</span>
+    <button id="install-btn">Install</button>
+    <button class="install-dismiss" id="install-dismiss">✕</button>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
